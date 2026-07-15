@@ -1,0 +1,98 @@
+services:
+  backend-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: democicd-backend-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:-democicd};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      Redis__ConnectionString: redis:6379
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: 5672
+      RabbitMq__UserName: ${RABBITMQ_DEFAULT_USER:-guest}
+      RabbitMq__Password: ${RABBITMQ_DEFAULT_PASS:-guest}
+      RabbitMq__VirtualHost: /
+      Cors__AllowedOrigins__0: http://localhost:5173
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - democicd
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: democicd-frontend
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080}
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend-api
+    networks:
+      - democicd
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: democicd-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-democicd}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-democicd}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - democicd
+
+  redis:
+    image: redis:7-alpine
+    container_name: democicd-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - democicd
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: democicd-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - democicd
+
+volumes:
+  postgres_data:
+
+networks:
+  democicd:
+    driver: bridge
