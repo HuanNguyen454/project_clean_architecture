@@ -1,6 +1,6 @@
-import { StatusBadge } from '../components/StatusBadge.jsx';
-import { useApiHealth } from '../hooks/useApiHealth.js';
-import { API_BASE_URL } from '../services/apiClient.js';
+import { StatusBadge } from '../../shared/components/StatusBadge.jsx';
+import { useApiHealth } from '../../shared/hooks/useApiHealth.js';
+import { API_BASE_URL } from '../../shared/services/apiClient.js';
 
 export function HealthPage() {
   const { status, data, error } = useApiHealth();
@@ -10,8 +10,8 @@ export function HealthPage() {
       <section className="workspace">
         <div className="workspace__header">
           <div>
-            <p className="eyebrow">Clean Architecture</p>
-            <h1>DemoCICD</h1>
+            <p className="eyebrow">TuteClass Frontend</p>
+            <h1>Project Structure</h1>
           </div>
           <StatusBadge status={status} />
         </div>
@@ -20,7 +20,7 @@ export function HealthPage() {
           <article className="panel">
             <span className="panel__label">Backend API</span>
             <strong>{API_BASE_URL}</strong>
-            <p>React client is configured through Vite environment variables.</p>
+            <p>Shared services read API configuration from Vite environment variables.</p>
           </article>
 
           <article className="panel">
