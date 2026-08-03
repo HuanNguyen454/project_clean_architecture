@@ -1,0 +1,7 @@
+.role-shell {
+  color: var(--tc-color-ink);
+}
+
+.role-topbar {
+  min-height: 68px;
+}

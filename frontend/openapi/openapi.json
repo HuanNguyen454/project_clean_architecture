@@ -1,0 +1,39 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "TuteClass API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/system/info": {
+      "get": {
+        "operationId": "getSystemInfo",
+        "responses": {
+          "200": {
+            "description": "System information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SystemInfoResponse": {
+        "type": "object",
+        "required": ["name", "environment", "timestampUtc"],
+        "properties": {
+          "name": { "type": "string" },
+          "environment": { "type": "string" },
+          "timestampUtc": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

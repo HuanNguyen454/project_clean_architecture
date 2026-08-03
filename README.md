@@ -52,3 +52,21 @@ npm run dev
 ```
 
 Set `VITE_API_BASE_URL` in `frontend/.env` when the API uses a different URL.
+
+The frontend uses React with TypeScript, Ant Design, Axios, TanStack React Query,
+FullCalendar, and Recharts. Validate it with:
+
+```bash
+npm run typecheck
+npm run build
+```
+
+Generate frontend DTO types from the running .NET Swagger document:
+
+```bash
+npm run generate:api
+```
+
+Use `npm run generate:api:local` while the backend is unavailable. The local
+OpenAPI contract is only a bootstrap example and should be replaced by the
+backend-generated Swagger contract when API development starts.

@@ -1,6 +1,6 @@
-import { StatusBadge } from '../../shared/components/StatusBadge.jsx';
-import { useApiHealth } from '../../shared/hooks/useApiHealth.js';
-import { API_BASE_URL } from '../../shared/services/apiClient.js';
+import { StatusBadge } from '../../shared/components/StatusBadge';
+import { useApiHealth } from '../../shared/hooks/useApiHealth';
+import { API_BASE_URL } from '../../shared/services/apiClient';
 
 export function HealthPage() {
   const { status, data, error } = useApiHealth();
@@ -26,8 +26,8 @@ export function HealthPage() {
           <article className="panel">
             <span className="panel__label">System Info</span>
             {status === 'loading' && <p>Checking API connection...</p>}
-            {status === 'error' && <p className="error-text">{error.message}</p>}
-            {status === 'ready' && (
+            {status === 'error' && <p className="error-text">{error?.message}</p>}
+            {status === 'ready' && data && (
               <dl className="system-info">
                 <div>
                   <dt>Name</dt>
